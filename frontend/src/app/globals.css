@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@custom-variant dark (&:is(.dark, .dark *));
+
+:root {
+  --bg: #fdfdfd;
+  --text: #000000;
+  --zinc-800: #27272a;
+  --zinc-900: #18181b;
+}
+
+.dark {
+  --bg: #000000;
+  --text: #ffffff;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+::selection {
+  background-color: var(--zinc-800);
+  color: var(--text);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--zinc-800);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--zinc-900);
+}
