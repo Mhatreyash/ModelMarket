@@ -1,5 +1,8 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
-import { configVariable, defineConfig } from "hardhat/config";
+import { defineConfig } from "hardhat/config";
 
 export default defineConfig({
   plugins: [hardhatToolboxMochaEthersPlugin],
@@ -15,11 +18,12 @@ export default defineConfig({
   networks: {
     hardhatMainnet: { type: "edr-simulated", chainType: "l1" },
     hardhatOp: { type: "edr-simulated", chainType: "op" },
-    sepolia: {
+    baseSepolia: {
       type: "http",
       chainType: "l1",
-      url: configVariable("SEPOLIA_RPC_URL"),
-      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+      url: "https://sepolia.base.org",
+      // It reads the key directly from your new .env file!
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
   },
 });
