@@ -3,3 +3,39 @@ node_modules
 __pycache__
 *.pyc
 .DS_Store
+# Compilation output
+/dist
+
+# pnpm deploy output
+/bundle
+
+# Hardhat Build Artifacts
+/artifacts
+
+# Hardhat compilation (v2) support directory
+/cache
+
+# Typechain output
+/types
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Hardhat coverage reports
+/coverage
+
+# Gas snapshot files
+/.gas-snapshot
+
+# Snapshot cheatcodes output
+/snapshots
+
+# Hardhat & Node.js
+contracts/node_modules/
+contracts/artifacts/
+contracts/cache/
+contracts/types/
+contracts/typechain-types/
+code_context.txt
