@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
-import { 
-  Box, 
-  Terminal, 
-  ArrowRight, 
-  Zap, 
-  Code2, 
-  FileText, 
+import {
+  Box,
+  Terminal,
+  ArrowRight,
+  Zap,
+  Code2,
+  FileText,
   MessageSquare,
   Cpu,
   CheckCircle2,
@@ -18,11 +18,14 @@ import {
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { ParticlesBackground } from '@/components/ParticlesBackground';
+import { useUGFPayment } from '@/hooks/useUGFPayment';
+
 
 export default function Home() {
   const [demoState, setDemoState] = useState<'idle' | 'processing' | 'success'>('idle');
   const [resumeText, setResumeText] = useState('');
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const { processPayment, isProcessing } = useUGFPayment();
 
   const connectWallet = async () => {
     if (typeof window !== 'undefined' && typeof (window as any).ethereum !== 'undefined') {
@@ -41,19 +44,24 @@ export default function Home() {
 
   const handleGenerate = async () => {
     if (!resumeText.trim()) return;
-    
+
     setDemoState('processing');
-    
-    // Simulate UGF processing
-    await new Promise(r => setTimeout(r, 2500));
-    
-    setDemoState('success');
+
+    // Call YOUR engine instead of a fake timeout!
+    const txHash = await processPayment(0.10, "resume_roaster");
+
+    if (txHash) {
+      console.log("Receipt received! Ready to send to Python backend:", txHash);
+      setDemoState('success');
+    } else {
+      setDemoState('idle'); 
+    }
   };
 
   return (
     <div className="min-h-screen font-sans">
       <ParticlesBackground />
-      
+
       {/* Navbar */}
       <header className="sticky top-4 z-50 max-w-7xl mx-auto w-[calc(100%-2rem)] border border-zinc-200/80 dark:border-white/20 bg-white/60 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-lg dark:shadow-white/5 transition-colors duration-300 rounded-full">
         <div className="px-6 md:px-8 h-16 flex items-center justify-between">
@@ -69,7 +77,7 @@ export default function Home() {
           </nav>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <button 
+            <button
               onClick={connectWallet}
               className="text-sm font-medium text-white dark:text-zinc-900 bg-zinc-900 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-100 px-5 py-2 rounded-full transition-all"
             >
@@ -94,7 +102,7 @@ export default function Home() {
               {/* Bottom Right: Warm Amber/Yellow */}
               <div className="absolute w-[400px] h-[300px] bg-amber-200/60 dark:bg-amber-600/40 rounded-full blur-[90px] translate-x-1/4 translate-y-1/4"></div>
             </div>
-            
+
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-6">
               <span className="w-2 h-2 rounded-full bg-green-500" />
               Powered by UGF on Base Sepolia
@@ -126,7 +134,7 @@ export default function Home() {
               <h2 className="text-3xl font-medium text-zinc-900 dark:text-white mb-4">The Invisible Blockchain</h2>
               <p className="text-zinc-600 dark:text-zinc-400">A seamless payment experience, engineered for mainstream adoption.</p>
             </div>
-            
+
             <div className="relative">
               {/* Vibrant Background Orbs */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1000px] h-full pointer-events-none -z-10">
@@ -146,7 +154,7 @@ export default function Home() {
                     Select a specialized AI model from our marketplace and provide your prompt or data.
                   </p>
                 </div>
-                
+
                 {/* Card 2 */}
                 <div className="relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-transform hover:-translate-y-1">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center shadow-lg shadow-purple-500/30 mb-8">
@@ -157,7 +165,7 @@ export default function Home() {
                     Confirm a tiny payment (e.g., $0.05 Mock USD). UGF handles the ETH gas fee invisibly.
                   </p>
                 </div>
-                
+
                 {/* Card 3 */}
                 <div className="relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-transform hover:-translate-y-1">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/30 mb-8">
@@ -271,16 +279,16 @@ export default function Home() {
             </div>
 
             <div className="relative z-10 border border-white/60 dark:border-white/10 rounded-[2rem] overflow-hidden bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none grid md:grid-cols-2">
-              
+
               {/* Input Side */}
               <div className="p-6 border-r border-white/60 dark:border-white/10 flex flex-col">
                 <div className="flex items-center gap-2 mb-4 text-zinc-900 dark:text-white font-medium">
                   <FileText className="w-5 h-5" /> Resume Roaster AI
                 </div>
-                
+
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">Paste Resume Content</label>
-                  <textarea 
+                  <textarea
                     value={resumeText}
                     onChange={(e) => setResumeText(e.target.value)}
                     className="w-full h-32 bg-white/50 dark:bg-black/50 border border-white/60 dark:border-white/10 rounded-lg p-4 text-sm text-zinc-900 dark:text-zinc-200 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-600 focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 transition-all resize-none"
@@ -293,7 +301,7 @@ export default function Home() {
                     <div className="text-xs text-zinc-500 mb-1">Execution Cost</div>
                     <div className="text-lg font-medium text-zinc-900 dark:text-white">$0.10 <span className="text-sm text-zinc-500 font-normal">Mock USD</span></div>
                   </div>
-                  <button 
+                  <button
                     onClick={handleGenerate}
                     disabled={demoState === 'processing' || !resumeText.trim()}
                     className="bg-zinc-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-full font-medium text-sm hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50 flex items-center gap-2"
@@ -308,7 +316,7 @@ export default function Home() {
                 <div className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-4 border-b border-white/60 dark:border-white/10 pb-3">
                   Output Console
                 </div>
-                
+
                 <div className="flex-1 font-mono text-sm leading-relaxed relative">
                   {demoState === 'idle' && (
                     <div className="absolute inset-0 flex items-center justify-center text-zinc-500 dark:text-zinc-600 text-center px-6">
@@ -342,7 +350,7 @@ export default function Home() {
                       <div className="inline-flex items-center gap-2 px-2 py-1 rounded bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-sans mb-4 border border-green-200 dark:border-green-500/20">
                         <CheckCircle2 className="w-3 h-3" /> Transaction Confirmed
                       </div>
-                      
+
                       <div className="text-zinc-700 dark:text-zinc-300">
                         <span className="text-blue-600 dark:text-blue-400">System:</span> Analyzing provided resume...
                         <br /><br />
