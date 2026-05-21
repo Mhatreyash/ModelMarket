@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 import {
   Box,
   Terminal,
@@ -17,15 +18,20 @@ import {
   CircleDollarSign
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { ParticlesBackground } from '@/components/ParticlesBackground';
 import { useUGFPayment } from '@/hooks/useUGFPayment';
-
 
 export default function Home() {
   const [demoState, setDemoState] = useState<'idle' | 'processing' | 'success'>('idle');
   const [resumeText, setResumeText] = useState('');
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const { processPayment, isProcessing } = useUGFPayment();
+
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const connectWallet = async () => {
     if (typeof window !== 'undefined' && typeof (window as any).ethereum !== 'undefined') {
@@ -58,12 +64,37 @@ export default function Home() {
     }
   };
 
+  const isDark = resolvedTheme === 'dark';
+
   return (
-    <div className="min-h-screen font-sans">
-      <ParticlesBackground />
+    <div className="min-h-screen font-sans transition-colors duration-300">
+      {/* Background Section */}
+      {mounted ? (
+        <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden bg-white dark:bg-black">
+          <video
+            key={resolvedTheme} // Force re-render of the video element to reload correct source on theme change
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-85 dark:opacity-80 transition-opacity duration-500"
+          >
+            <source 
+              src={isDark ? "/assets/landing page earth dark.mp4" : "/assets/landing page earth light.mp4"} 
+              type="video/mp4" 
+            />
+            Your browser does not support the video tag.
+          </video>
+          {/* Subtle gradient overlay to enhance readability and blend with light/dark themes */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/70 dark:from-black/50 dark:via-transparent dark:to-black/70 pointer-events-none transition-all duration-300" />
+        </div>
+      ) : (
+        /* Server-side / mounting skeleton fallback */
+        <div className="fixed inset-0 bg-white dark:bg-black -z-10" />
+      )}
 
       {/* Navbar */}
-      <header className="sticky top-4 z-50 max-w-7xl mx-auto w-[calc(100%-2rem)] border border-zinc-200/80 dark:border-white/20 bg-white/60 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-lg dark:shadow-white/5 transition-colors duration-300 rounded-full">
+      <header className="sticky top-4 z-50 max-w-7xl mx-auto w-[calc(100%-2rem)] border border-zinc-200/80 dark:border-white/20 bg-white/60 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-lg dark:shadow-white/5 transition-all duration-300 rounded-full">
         <div className="px-6 md:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-medium text-zinc-900 dark:text-white">
             <Box className="w-5 h-5" />
@@ -91,20 +122,20 @@ export default function Home() {
         {/* Hero Section */}
         <section className="pt-24 pb-16 px-6 relative overflow-hidden">
           <div className="max-w-3xl mx-auto text-center relative z-10">
-            {/* Multi-color Mesh Gradient Behind Text */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[900px] h-[400px] -z-10 pointer-events-none flex justify-center items-center opacity-90 dark:opacity-80">
+            {/* Multi-color Mesh Gradient Behind Text (Only visible/active in light mode or with low opacity in dark mode so it doesn't wash out the earth video) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[900px] h-[400px] -z-10 pointer-events-none flex justify-center items-center opacity-95 dark:opacity-40">
               {/* Top Left: Purple/Lavender */}
-              <div className="absolute w-[400px] h-[300px] bg-purple-300/60 dark:bg-purple-600/40 rounded-full blur-[90px] -translate-x-1/3 -translate-y-1/4"></div>
+              <div className="absolute w-[400px] h-[300px] bg-purple-300/60 dark:bg-purple-600/20 rounded-full blur-[90px] -translate-x-1/3 -translate-y-1/4"></div>
               {/* Top Right: Bright Peach/Orange */}
-              <div className="absolute w-[400px] h-[300px] bg-orange-300/60 dark:bg-orange-600/40 rounded-full blur-[90px] translate-x-1/3 -translate-y-1/4"></div>
+              <div className="absolute w-[400px] h-[300px] bg-orange-300/60 dark:bg-orange-600/20 rounded-full blur-[90px] translate-x-1/3 -translate-y-1/4"></div>
               {/* Bottom Left: Soft Cyan */}
-              <div className="absolute w-[400px] h-[300px] bg-cyan-300/60 dark:bg-cyan-600/40 rounded-full blur-[90px] -translate-x-1/4 translate-y-1/4"></div>
+              <div className="absolute w-[400px] h-[300px] bg-cyan-300/60 dark:bg-cyan-600/20 rounded-full blur-[90px] -translate-x-1/4 translate-y-1/4"></div>
               {/* Bottom Right: Warm Amber/Yellow */}
-              <div className="absolute w-[400px] h-[300px] bg-amber-200/60 dark:bg-amber-600/40 rounded-full blur-[90px] translate-x-1/4 translate-y-1/4"></div>
+              <div className="absolute w-[400px] h-[300px] bg-amber-200/60 dark:bg-amber-600/20 rounded-full blur-[90px] translate-x-1/4 translate-y-1/4"></div>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-6">
-              <span className="w-2 h-2 rounded-full bg-green-500" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-6 backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               Powered by UGF on Base Sepolia
             </div>
             <h1 className="text-4xl md:text-[4rem] font-serif font-semibold text-[#0f172a] dark:text-slate-100 tracking-tight leading-[1.1] mb-5">
@@ -117,10 +148,10 @@ export default function Home() {
               Access powerful AI tools through seamless gasless payments powered by UGF — no ETH, no subscriptions, no blockchain complexity.
             </p>
             <div className="flex items-center justify-center gap-4">
-              <a href="#marketplace" className="bg-zinc-900 dark:bg-white text-white dark:text-black px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors">
+              <a href="#marketplace" className="bg-zinc-900 dark:bg-white text-white dark:text-black px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shadow-lg">
                 Explore Marketplace <ArrowRight className="w-4 h-4" />
               </a>
-              <a href="#demo" className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white px-6 py-3 rounded-full font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
+              <a href="#demo" className="bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white px-6 py-3 rounded-full font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors backdrop-blur-md">
                 View Demo
               </a>
             </div>
@@ -128,7 +159,7 @@ export default function Home() {
         </section>
 
         {/* How It Works */}
-        <section id="docs" className="py-32 border-y border-zinc-200 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-950/50 px-6 relative overflow-hidden">
+        <section id="docs" className="py-32 border-y border-zinc-200 dark:border-zinc-900/60 bg-zinc-50/50 dark:bg-zinc-950/20 px-6 relative overflow-hidden">
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="mb-20 text-center">
               <h2 className="text-3xl font-medium text-zinc-900 dark:text-white mb-4">The Invisible Blockchain</h2>
@@ -136,16 +167,16 @@ export default function Home() {
             </div>
 
             <div className="relative">
-              {/* Vibrant Background Orbs */}
+              {/* Vibrant Background Orbs (Softened in dark mode so the video is visible) */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1000px] h-full pointer-events-none -z-10">
-                <div className="absolute -top-10 -left-10 w-72 h-72 bg-pink-400/50 dark:bg-pink-500/50 rounded-full blur-[70px]"></div>
-                <div className="absolute -bottom-10 -right-10 w-80 h-80 bg-blue-400/50 dark:bg-blue-500/50 rounded-full blur-[80px]"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-purple-400/50 dark:bg-purple-500/50 rounded-full blur-[70px]"></div>
+                <div className="absolute -top-10 -left-10 w-72 h-72 bg-pink-400/40 dark:bg-pink-500/10 rounded-full blur-[70px]"></div>
+                <div className="absolute -bottom-10 -right-10 w-80 h-80 bg-blue-400/40 dark:bg-blue-500/10 rounded-full blur-[80px]"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-purple-400/40 dark:bg-purple-500/10 rounded-full blur-[70px]"></div>
               </div>
 
               <div className="grid md:grid-cols-3 gap-8">
                 {/* Card 1 */}
-                <div className="relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-transform hover:-translate-y-1">
+                <div className="relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/30 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:bg-white/60 dark:hover:bg-black/40">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center shadow-lg shadow-pink-500/30 mb-8">
                     <Terminal className="w-6 h-6 text-white" />
                   </div>
@@ -156,7 +187,7 @@ export default function Home() {
                 </div>
 
                 {/* Card 2 */}
-                <div className="relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-transform hover:-translate-y-1">
+                <div className="relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/30 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:bg-white/60 dark:hover:bg-black/40">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center shadow-lg shadow-purple-500/30 mb-8">
                     <CircleDollarSign className="w-6 h-6 text-white" />
                   </div>
@@ -167,7 +198,7 @@ export default function Home() {
                 </div>
 
                 {/* Card 3 */}
-                <div className="relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-transform hover:-translate-y-1">
+                <div className="relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/30 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:bg-white/60 dark:hover:bg-black/40">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/30 mb-8">
                     <Boxes className="w-6 h-6 text-white" />
                   </div>
@@ -185,8 +216,8 @@ export default function Home() {
         <section id="marketplace" className="py-32 px-6 relative overflow-hidden">
           {/* Vibrant Background Orbs for Marketplace */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1200px] h-full pointer-events-none -z-10">
-            <div className="absolute top-20 right-20 w-80 h-80 bg-orange-400/40 dark:bg-orange-500/30 rounded-full blur-[80px]"></div>
-            <div className="absolute bottom-20 left-20 w-80 h-80 bg-teal-400/40 dark:bg-teal-500/30 rounded-full blur-[80px]"></div>
+            <div className="absolute top-20 right-20 w-80 h-80 bg-orange-400/30 dark:bg-orange-500/10 rounded-full blur-[80px]"></div>
+            <div className="absolute bottom-20 left-20 w-80 h-80 bg-teal-400/30 dark:bg-teal-500/10 rounded-full blur-[80px]"></div>
           </div>
 
           <div className="max-w-7xl mx-auto relative z-10">
@@ -202,7 +233,7 @@ export default function Home() {
 
             <div className="grid md:grid-cols-3 gap-8">
               {/* Card 1 */}
-              <div className="group relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-all hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700">
+              <div className="group relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/30 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-white/60 dark:hover:bg-black/45">
                 <div className="flex justify-between items-start mb-6">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
                     <FileText className="w-6 h-6 text-white" />
@@ -222,7 +253,7 @@ export default function Home() {
               </div>
 
               {/* Card 2 */}
-              <div className="group relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-all hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700">
+              <div className="group relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/30 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-white/60 dark:hover:bg-black/45">
                 <div className="flex justify-between items-start mb-6">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-teal-500/30">
                     <Code2 className="w-6 h-6 text-white" />
@@ -242,7 +273,7 @@ export default function Home() {
               </div>
 
               {/* Card 3 */}
-              <div className="group relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-all hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700">
+              <div className="group relative z-10 p-8 rounded-[2rem] border border-white/60 dark:border-white/10 bg-white/40 dark:bg-black/30 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-white/60 dark:hover:bg-black/45">
                 <div className="flex justify-between items-start mb-6">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-400 to-pink-500 flex items-center justify-center shadow-lg shadow-fuchsia-500/30">
                     <MessageSquare className="w-6 h-6 text-white" />
@@ -267,9 +298,9 @@ export default function Home() {
         {/* Live Demo */}
         <section id="demo" className="py-16 relative overflow-hidden px-6">
           {/* Ambient Background for Live Demo */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1000px] h-[500px] -z-10 pointer-events-none opacity-50 dark:opacity-55">
-            <div className="absolute w-[500px] h-[500px] bg-blue-400/40 dark:bg-blue-500/45 rounded-full blur-[100px] -translate-x-1/4 -translate-y-1/4"></div>
-            <div className="absolute w-[500px] h-[500px] bg-amber-400/40 dark:bg-orange-500/45 rounded-full blur-[100px] translate-x-1/4 translate-y-1/4"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1000px] h-[500px] -z-10 pointer-events-none opacity-50 dark:opacity-20">
+            <div className="absolute w-[500px] h-[500px] bg-blue-400/40 dark:bg-blue-500/20 rounded-full blur-[100px] -translate-x-1/4 -translate-y-1/4"></div>
+            <div className="absolute w-[500px] h-[500px] bg-amber-400/40 dark:bg-orange-500/20 rounded-full blur-[100px] translate-x-1/4 translate-y-1/4"></div>
           </div>
 
           <div className="max-w-5xl mx-auto relative z-10">
@@ -278,10 +309,10 @@ export default function Home() {
               <p className="text-zinc-600 dark:text-zinc-400">Experience the UGF payment abstraction firsthand.</p>
             </div>
 
-            <div className="relative z-10 border border-white/60 dark:border-white/10 rounded-[2rem] overflow-hidden bg-white/40 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none grid md:grid-cols-2">
+            <div className="relative z-10 border border-white/60 dark:border-white/10 rounded-[2rem] overflow-hidden bg-white/40 dark:bg-black/30 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-none grid md:grid-cols-2">
 
               {/* Input Side */}
-              <div className="p-6 border-r border-white/60 dark:border-white/10 flex flex-col">
+              <div className="p-6 border-r border-white/60 dark:border-white/10 flex flex-col bg-white/20 dark:bg-black/10">
                 <div className="flex items-center gap-2 mb-4 text-zinc-900 dark:text-white font-medium">
                   <FileText className="w-5 h-5" /> Resume Roaster AI
                 </div>
@@ -375,7 +406,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-200 dark:border-zinc-900 bg-white dark:bg-black pt-16 pb-8 px-6 relative z-10">
+      <footer className="border-t border-zinc-200 dark:border-zinc-900/60 bg-white/20 dark:bg-black/40 pt-16 pb-8 px-6 relative z-10 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
           <div>
             <div className="flex items-center gap-2 font-medium text-zinc-900 dark:text-white mb-4">
@@ -405,7 +436,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between pt-8 border-t border-zinc-200 dark:border-zinc-900 text-xs text-zinc-500 dark:text-zinc-600">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between pt-8 border-t border-zinc-200 dark:border-zinc-900/60 text-xs text-zinc-500 dark:text-zinc-600">
           <div>© 2026 ModelMarket Inc. All rights reserved.</div>
           <div className="flex items-center gap-4 mt-4 md:mt-0">
             <span>Built on Base Sepolia</span>
