@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useTheme } from 'next-themes';
+import React, { useState } from 'react';
 import {
   Box,
   Terminal,
@@ -26,12 +25,7 @@ export default function Home() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const { processPayment, isProcessing } = useUGFPayment();
 
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const connectWallet = async () => {
     if (typeof window !== 'undefined' && typeof (window as any).ethereum !== 'undefined') {
@@ -64,34 +58,37 @@ export default function Home() {
     }
   };
 
-  const isDark = resolvedTheme === 'dark';
-
   return (
     <div className="min-h-screen font-sans transition-colors duration-300">
       {/* Background Section */}
-      {mounted ? (
-        <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden bg-white dark:bg-black">
-          <video
-            key={resolvedTheme} // Force re-render of the video element to reload correct source on theme change
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-85 dark:opacity-80 transition-opacity duration-500"
-          >
-            <source 
-              src={isDark ? "/assets/landing page earth dark.mp4" : "/assets/landing page earth light.mp4"} 
-              type="video/mp4" 
-            />
-            Your browser does not support the video tag.
-          </video>
-          {/* Subtle gradient overlay to enhance readability and blend with light/dark themes */}
-          <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/70 dark:from-black/50 dark:via-transparent dark:to-black/70 pointer-events-none transition-all duration-300" />
-        </div>
-      ) : (
-        /* Server-side / mounting skeleton fallback */
-        <div className="fixed inset-0 bg-white dark:bg-black -z-10" />
-      )}
+      <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden bg-white dark:bg-black">
+        {/* Dark Theme Earth Video */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0 dark:opacity-80 pointer-events-none"
+        >
+          <source src="/assets/landing page earth dark.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Light Theme Earth Video */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-85 dark:opacity-0 pointer-events-none"
+        >
+          <source src="/assets/landing page earth light.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Subtle gradient overlay to enhance readability and blend with light/dark themes */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/70 dark:from-black/50 dark:via-transparent dark:to-black/70 pointer-events-none transition-all duration-300" />
+      </div>
 
       {/* Navbar */}
       <header className="sticky top-4 z-50 max-w-7xl mx-auto w-[calc(100%-2rem)] border border-zinc-200/80 dark:border-white/20 bg-white/60 dark:bg-black/40 backdrop-blur-2xl shadow-xl shadow-zinc-200/50 dark:shadow-lg dark:shadow-white/5 transition-all duration-300 rounded-full">
