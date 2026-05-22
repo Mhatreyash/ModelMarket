@@ -41,7 +41,7 @@ Verdict: 7.5/10. Add concrete metrics to score higher!`
     try {
       // 3. Trigger live Gemini 2.5 Flash model
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-flash-lite-latest' });
 
       const prompt = `You are a brutal, elite, yet highly constructive Silicon Valley recruiter roasting a candidate's resume.
 Be punchy, direct, and slightly sarcastic, but give high-value advice.

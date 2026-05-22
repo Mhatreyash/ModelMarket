@@ -41,7 +41,7 @@ Verdict: 8/10. Wrap async processes inside try/catch blocks!`
     try {
       // 3. Trigger live Gemini 2.5 Flash model
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-flash-lite-latest' });
 
       const prompt = `You are a brilliant, ultra-fast tech lead and security auditor reviewing a pull request.
 Review the following code block for syntax issues, security vulnerabilities, memory leaks, and performance flaws:
