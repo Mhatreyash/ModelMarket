@@ -1,12 +1,23 @@
 const http = require('http');
 
-const hostname = '127.0.0.1';
 const port = process.env.PORT || 4001;
 
 let payments = [];
 
 const server = http.createServer((req, res) => {
   const { method, url } = req;
+
+  // Add CORS headers to all responses
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Handle preflight OPTIONS requests
+  if (method === 'OPTIONS') {
+    res.statusCode = 204;
+    res.end();
+    return;
+  }
 
   if (method === 'GET' && url === '/') {
     res.statusCode = 200;
@@ -53,6 +64,6 @@ const server = http.createServer((req, res) => {
   res.end(JSON.stringify({ ok: false, error: 'Not found' }));
 });
 
-server.listen(port, hostname, () => {
-  console.log(`ModelMarket backend running at http://${hostname}:${port}/`);
+server.listen(port, () => {
+  console.log(`ModelMarket backend running at http://localhost:${port}/`);
 });

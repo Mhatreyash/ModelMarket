@@ -28,6 +28,7 @@ export default function Home() {
   const [demoState, setDemoState] = useState<'idle' | 'processing' | 'success'>('idle');
   const [resumeText, setResumeText] = useState('');
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [aiResponse, setAiResponse] = useState('');
   const { processPayment } = useUGFPayment();
 
   const { resolvedTheme } = useTheme();
@@ -132,6 +133,7 @@ export default function Home() {
     if (!resumeText.trim()) return;
 
     setDemoState('processing');
+    setAiResponse('');
     const txHash = await processPayment(selectedModel.cost, selectedModel.id);
 
     if (txHash) {
@@ -151,7 +153,44 @@ export default function Home() {
         });
         console.log('Logged payment to backend');
       } catch (err) {
-        console.error('Failed to log to backend', err);
+        console.warn('Failed to log to backend (Express server offline):', err);
+      }
+
+      // Fetch from our live, robust, sandbox-guarded Next.js model routes!
+      try {
+        let endpoint = '/api/model/roast';
+        let body: any = { txHash };
+
+        if (selectedModel.id === 'resume_roaster') {
+          endpoint = '/api/model/roast';
+          body.resumeText = resumeText;
+        } else if (selectedModel.id === 'code_reviewer') {
+          endpoint = '/api/model/review';
+          body.codeText = resumeText;
+        } else if (selectedModel.id === 'social_caption_gen') {
+          endpoint = '/api/model/caption';
+          body.promptText = resumeText;
+        }
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        if (!res.ok) {
+          throw new Error(`API returned status ${res.status}`);
+        }
+
+        const data = await res.json();
+        if (data.error) {
+          setAiResponse(`Error: ${data.error}`);
+        } else {
+          setAiResponse(data.feedback || 'No output generated.');
+        }
+      } catch (aiErr: any) {
+        console.error('Failed to query AI model:', aiErr);
+        setAiResponse(`AI execution failure: ${aiErr.message}`);
       }
 
       setDemoState('success');
@@ -645,8 +684,8 @@ export default function Home() {
                           <div>
                             <span className="text-zinc-500 font-semibold font-mono">RESULT &gt;</span>
                           </div>
-                          <div className="text-[#22d3ee] font-semibold pl-2">
-                            Sample output for {selectedModel.name} (mock)
+                          <div className="text-zinc-100 font-sans pl-2 whitespace-pre-line text-sm leading-relaxed max-h-[300px] overflow-y-auto custom-scrollbar">
+                            {aiResponse || `Sample output for ${selectedModel.name} (mock)`}
                           </div>
                         </div>
                       </div>
