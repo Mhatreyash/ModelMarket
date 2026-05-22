@@ -102,7 +102,6 @@ export function useUGFPayment() {
       // 7. Trigger UGF Gasless execution
       const result = await openUGF({
         signer,
-        chainId: 84532,
         tx: {
           to: MODEL_MARKET_ADDRESS,
           data: data
