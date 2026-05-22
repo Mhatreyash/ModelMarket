@@ -192,6 +192,7 @@ const FlowArt: React.FC<FlowArtProps> = ({
     <main
       ref={containerRef}
       aria-label={ariaLabel}
+      data-is-mobile={isMobile}
       className={cx('w-full overflow-x-hidden', className)}
     >
       {children}
