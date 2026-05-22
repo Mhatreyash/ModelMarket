@@ -1,6 +1,7 @@
+/* File: src/app/globals.css */
 @import "tailwindcss";
 
-@import "tw-animate-css";
+/* REMOVED the broken @import "tw-animate-css"; */
 
 :root {
   --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
