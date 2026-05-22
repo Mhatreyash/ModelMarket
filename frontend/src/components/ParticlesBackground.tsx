@@ -15,10 +15,10 @@ export function ParticlesBackground() {
 
     let particlesArray: Particle[] = [];
     let animationFrameId: number;
-    let mouse = {
+    const mouse = {
       x: -1000,
       y: -1000,
-      radius: 150
+      radius: 150,
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -78,16 +78,16 @@ export function ParticlesBackground() {
         if (this.baseY < 0 || this.baseY > canvas!.height) this.speedY *= -1;
 
         // Antigravity (repulsion) from mouse
-        let dx = mouse.x - this.x;
-        let dy = mouse.y - this.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        let forceDirectionX = dx / distance;
-        let forceDirectionY = dy / distance;
-        
-        let maxDistance = mouse.radius;
-        let force = (maxDistance - distance) / maxDistance;
-        let directionX = forceDirectionX * force * 5;
-        let directionY = forceDirectionY * force * 5;
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const forceDirectionX = dx / distance;
+        const forceDirectionY = dy / distance;
+
+        const maxDistance = mouse.radius;
+        const force = (maxDistance - distance) / maxDistance;
+        const directionX = forceDirectionX * force * 5;
+        const directionY = forceDirectionY * force * 5;
 
         if (distance < mouse.radius) {
           this.x -= directionX;
@@ -95,11 +95,11 @@ export function ParticlesBackground() {
         } else {
           // Return slowly to base trajectory
           if (this.x !== this.baseX) {
-            let dx = this.x - this.baseX;
+            const dx = this.x - this.baseX;
             this.x -= dx / 20;
           }
           if (this.y !== this.baseY) {
-            let dy = this.y - this.baseY;
+            const dy = this.y - this.baseY;
             this.y -= dy / 20;
           }
         }

@@ -11,7 +11,6 @@ import {
   Code2,
   FileText,
   MessageSquare,
-  Cpu,
   CheckCircle2,
   Loader2,
   ChevronRight,
@@ -28,7 +27,6 @@ export default function Home() {
   const { processPayment } = useUGFPayment();
 
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('AI Micro-payment Made Simple');
   const [isAtTop, setIsAtTop] = useState<boolean>(true);
   // List of available models
@@ -38,10 +36,6 @@ export default function Home() {
     { id: 'social_caption_gen', name: 'Social Caption Gen', cost: 0.02 },
   ];
   const [selectedModel, setSelectedModel] = useState<{ id: string; name: string; cost: number }>(availableModels[0]);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Track which FlowSection is currently visible to adapt header colors
   useEffect(() => {
@@ -108,17 +102,25 @@ export default function Home() {
   };
 
   const connectWallet = async () => {
-    if (typeof window !== 'undefined' && typeof (window as any).ethereum !== 'undefined') {
-      try {
-        const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
-        if (accounts.length > 0) {
-          setWalletAddress(accounts[0]);
-        }
-      } catch (err) {
-        console.error('Wallet connection failed:', err);
-      }
-    } else {
+    if (typeof window === 'undefined') {
       alert('Please install MetaMask or another Web3 wallet to connect!');
+      return;
+    }
+
+    type EthereumProvider = { request: (args: { method: string }) => Promise<unknown> };
+    const eth = (window as unknown as { ethereum?: EthereumProvider }).ethereum;
+    if (!eth) {
+      alert('Please install MetaMask or another Web3 wallet to connect!');
+      return;
+    }
+
+    try {
+      const accounts = (await eth.request({ method: 'eth_requestAccounts' })) as string[];
+      if (accounts.length > 0) {
+        setWalletAddress(accounts[0]);
+      }
+    } catch (err) {
+      console.error('Wallet connection failed:', err);
     }
   };
 

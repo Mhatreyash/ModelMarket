@@ -7,7 +7,7 @@ export function useUGFPayment() {
   const MODEL_MARKET_ADDRESS = process.env.NEXT_PUBLIC_MODEL_MARKET_ADDRESS;
   const MOCK_USD_ADDRESS = process.env.NEXT_PUBLIC_MOCK_USD_ADDRESS;
 
-  const processPayment = async (costInMockUSD: number, promptId: string) => {
+  const processPayment = async (costInMockUSD: number, modelId: string) => {
     if (!MODEL_MARKET_ADDRESS || !MOCK_USD_ADDRESS) {
       console.error("Missing Environment Variables! Make sure .env.local is setup.");
       return null;
@@ -29,14 +29,15 @@ export function useUGFPayment() {
       console.log("3. EXECUTE: UGF is paying the ETH gas and calling our contract...");
       await new Promise(r => setTimeout(r, 800));
 
-      console.log("4. CONFIRM: Transaction successful!");
+      console.log("4. CONFIRM: Transaction successful!", { modelId });
       
       setIsProcessing(false);
       return "0xFakeTransactionHashReceipt123456"; 
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("UGF Payment Failed:", err);
-      setError(err.message);
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message);
       setIsProcessing(false);
       return null;
     }

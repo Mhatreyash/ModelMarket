@@ -1,22 +1,20 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Terminal, 
-  ArrowLeft, 
-  Zap, 
-  Key, 
-  Copy, 
-  Check, 
-  ExternalLink, 
-  Cpu, 
-  Wallet, 
+import {
+  Box,
+  ArrowLeft,
+  Zap,
+  Key,
+  Copy,
+  Check,
+  Cpu,
+  Wallet,
   TrendingUp,
   History,
   Activity,
   DollarSign,
-  Plus
+  Plus,
 } from 'lucide-react';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -54,32 +52,44 @@ export default function Dashboard() {
   useEffect(() => {
     // Check if wallet is already connected
     const checkWallet = async () => {
-      if (typeof window !== 'undefined' && typeof (window as any).ethereum !== 'undefined') {
-        try {
-          const accounts = await (window as any).ethereum.request({ method: 'eth_accounts' });
-          if (accounts.length > 0) {
-            setWalletAddress(accounts[0]);
-          }
-        } catch (err) {
-          console.error("Failed to fetch accounts:", err);
+      if (typeof window === 'undefined') return;
+
+      type EthereumProvider = { request: (args: { method: string }) => Promise<unknown> };
+      const eth = (window as unknown as { ethereum?: EthereumProvider }).ethereum;
+      if (!eth) return;
+
+      try {
+        const accounts = (await eth.request({ method: 'eth_accounts' })) as string[];
+        if (accounts.length > 0) {
+          setWalletAddress(accounts[0]);
         }
+      } catch (err) {
+        console.error('Failed to fetch accounts:', err);
       }
     };
     checkWallet();
   }, []);
 
   const connectWallet = async () => {
-    if (typeof window !== 'undefined' && typeof (window as any).ethereum !== 'undefined') {
-      try {
-        const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
-        if (accounts.length > 0) {
-          setWalletAddress(accounts[0]);
-        }
-      } catch (err) {
-        console.error("Wallet connection failed:", err);
-      }
-    } else {
+    if (typeof window === 'undefined') {
       alert('Please install MetaMask or another Web3 wallet to connect!');
+      return;
+    }
+
+    type EthereumProvider = { request: (args: { method: string }) => Promise<unknown> };
+    const eth = (window as unknown as { ethereum?: EthereumProvider }).ethereum;
+    if (!eth) {
+      alert('Please install MetaMask or another Web3 wallet to connect!');
+      return;
+    }
+
+    try {
+      const accounts = (await eth.request({ method: 'eth_requestAccounts' })) as string[];
+      if (accounts.length > 0) {
+        setWalletAddress(accounts[0]);
+      }
+    } catch (err) {
+      console.error('Wallet connection failed:', err);
     }
   };
 
