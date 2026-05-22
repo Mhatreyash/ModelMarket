@@ -57,20 +57,32 @@ const FlowArt: React.FC<FlowArtProps> = ({
 }) => {
   const containerRef = useRef<HTMLElement>(null);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
     let originalScrollRestoration: ScrollRestoration = 'auto';
-    if (typeof window !== 'undefined' && window.history) {
+    const mobileCheck = window.innerWidth < 768;
+    
+    if (!mobileCheck && typeof window !== 'undefined' && window.history) {
       originalScrollRestoration = window.history.scrollRestoration;
       window.history.scrollRestoration = 'manual';
       window.scrollTo(0, 0);
     }
+
     const timer = setTimeout(() => {
       setMounted(true);
     }, 0);
+
     return () => {
       clearTimeout(timer);
-      if (typeof window !== 'undefined' && window.history) {
+      window.removeEventListener('resize', handleResize);
+      if (!mobileCheck && typeof window !== 'undefined' && window.history) {
         window.history.scrollRestoration = originalScrollRestoration;
       }
     };
@@ -111,6 +123,18 @@ const FlowArt: React.FC<FlowArtProps> = ({
         containerRef.current.querySelectorAll<HTMLElement>('[data-flow-section]'),
       );
       if (sections.length === 0) return;
+
+      if (isMobile) {
+        // Reset properties on mobile to ensure clean standard scrolling layouts
+        sections.forEach((section) => {
+          const inner = section.querySelector<HTMLElement>('.flow-art-container');
+          if (inner) {
+            gsap.set(inner, { clearProps: 'all' });
+          }
+          gsap.set(section, { clearProps: 'all' });
+        });
+        return;
+      }
 
       const triggers: ScrollTrigger[] = [];
 
@@ -155,7 +179,7 @@ const FlowArt: React.FC<FlowArtProps> = ({
         ScrollTrigger.getAll().forEach((t) => t.kill(true));
       };
     },
-    { scope: containerRef, dependencies: [childCount(children), mounted] },
+    { scope: containerRef, dependencies: [childCount(children), mounted, isMobile] },
   );
 
   return (
