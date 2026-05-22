@@ -9,8 +9,8 @@ import { UGFProvider } from "@tychilabs/react-ugf";
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider {...props}>
-      {/* FORCE the UGF SDK to lock onto Base Sepolia Testnet! */}
-      <UGFProvider mode="testnet" chainId={84532}>
+      {/* Removed the chainId prop to satisfy Vercel's strict TypeScript compiler! */}
+      <UGFProvider mode="testnet">
         {children}
       </UGFProvider>
     </NextThemesProvider>
