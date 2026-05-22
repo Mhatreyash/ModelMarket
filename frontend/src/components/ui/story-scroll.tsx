@@ -57,8 +57,10 @@ const FlowArt: React.FC<FlowArtProps> = ({
 }) => {
   const containerRef = useRef<HTMLElement>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setReducedMotion(mq.matches);
     update();
@@ -66,9 +68,33 @@ const FlowArt: React.FC<FlowArtProps> = ({
     return () => mq.removeEventListener('change', update);
   }, []);
 
+  // Capture late-loading assets (like the Hero background video or styled cards) to ensure ScrollTrigger heights align
+  useEffect(() => {
+    if (!mounted) return;
+
+    const refresh = () => {
+      ScrollTrigger.refresh();
+    };
+
+    const t1 = setTimeout(refresh, 150);
+    const t2 = setTimeout(refresh, 600);
+    const t3 = setTimeout(refresh, 1500);
+
+    window.addEventListener('load', refresh);
+    window.addEventListener('resize', refresh);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      window.removeEventListener('load', refresh);
+      window.removeEventListener('resize', refresh);
+    };
+  }, [mounted]);
+
   useGSAP(
     () => {
-      if (!containerRef.current || reducedMotion) return;
+      if (!containerRef.current || !mounted || reducedMotion) return;
 
       const sections = Array.from(
         containerRef.current.querySelectorAll<HTMLElement>('[data-flow-section]'),
@@ -117,7 +143,7 @@ const FlowArt: React.FC<FlowArtProps> = ({
         triggers.forEach((t) => t.kill());
       };
     },
-    { scope: containerRef, dependencies: [childCount(children), reducedMotion] },
+    { scope: containerRef, dependencies: [childCount(children), reducedMotion, mounted] },
   );
 
   return (
