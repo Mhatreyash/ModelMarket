@@ -16,6 +16,7 @@ import {
   Boxes,
   CircleDollarSign
 } from 'lucide-react';
+import Link from 'next/link';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useUGFPayment } from '@/hooks/useUGFPayment';
 
@@ -101,7 +102,7 @@ export default function Home() {
             <a href="#marketplace" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Marketplace</a>
             <a href="#demo" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Developers</a>
             <a href="#docs" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Docs</a>
-            <a href="/dashboard" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Console</a>
+            <Link href="/dashboard" className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">Console</Link>
           </nav>
           <div className="flex items-center gap-4">
             <ThemeToggle />
