@@ -66,17 +66,7 @@ Verdict: [X]/10. [One final closing roast/sentence in normal text].`;
     } catch (apiError: any) {
       console.warn('[Backend AI] Live Gemini 2.5 Pro API failed. Falling back to Demo Mode Sandbox.', apiError);
       return NextResponse.json({
-        feedback: `[SYSTEM WORKAROUND]: Live Gemini API key rate-limited or quota exhausted (429).
-Here is your simulated Roasting Feedback:
-
-System: Running Resume Roaster AI...
-
-Feedback:
-[-] Impact metrics are too vague. Please add numbers (e.g., "Improved latency by 45%" instead of just "Optimised latency").
-[-] Overused corporate jargon ("spearheaded", "synergized") detected in bullet points.
-[+] Strong demonstration of React Native and Flutter cross-platform skill progression.
-
-Verdict: 7.5/10. Add concrete metrics to score higher!`
+        feedback: `[SYSTEM WORKAROUND]: Live Gemini API key rate-limited or quota exhausted (429).`
       });
     }
 
