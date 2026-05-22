@@ -56,7 +56,6 @@ const FlowArt: React.FC<FlowArtProps> = ({
   'aria-label': ariaLabel = 'Story scroll',
 }) => {
   const containerRef = useRef<HTMLElement>(null);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -69,13 +68,8 @@ const FlowArt: React.FC<FlowArtProps> = ({
     const timer = setTimeout(() => {
       setMounted(true);
     }, 0);
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setReducedMotion(mq.matches);
-    update();
-    mq.addEventListener('change', update);
     return () => {
       clearTimeout(timer);
-      mq.removeEventListener('change', update);
       if (typeof window !== 'undefined' && window.history) {
         window.history.scrollRestoration = originalScrollRestoration;
       }
@@ -108,7 +102,7 @@ const FlowArt: React.FC<FlowArtProps> = ({
 
   useGSAP(
     () => {
-      if (!containerRef.current || !mounted || reducedMotion) return;
+      if (!containerRef.current || !mounted) return;
 
       // Force teardown and reversion of all stale ScrollTriggers and spacer elements from previous views
       ScrollTrigger.getAll().forEach((t) => t.kill(true));
@@ -161,7 +155,7 @@ const FlowArt: React.FC<FlowArtProps> = ({
         ScrollTrigger.getAll().forEach((t) => t.kill(true));
       };
     },
-    { scope: containerRef, dependencies: [childCount(children), reducedMotion, mounted] },
+    { scope: containerRef, dependencies: [childCount(children), mounted] },
   );
 
   return (
