@@ -4,6 +4,17 @@ ModelMarket is a high-fidelity, decentralized AI model studio engineered to make
 
 ---
 
+## 🔗 Project Links & Assets
+
+| Asset | Link |
+| :--- | :--- |
+| **🚀 Live App** | [ModelMarket \| Gasless AI Micro-transactions](ADD_DEPLOYED_LINK_HERE) |
+| **💻 Codebase** | [Mhatreyash/ModelMarket](https://github.com/Mhatreyash/ModelMarket) |
+| **📊 Presentation (PPT)** | [Google Slides Link](https://docs.google.com/presentation/d/1oXl7wq7n2cSXt_HjuVYnG5gh1M9diWWX/edit?usp=sharing&ouid=107256316222873081826&rtpof=true&sd=true) |
+| **🎥 Demo Video** | [Watch Video on Google Drive](https://drive.google.com/file/d/1NWqhGFHT-qLPuzX-LEuSIRX2ZX_0Lch2/view?usp=drivesdk) |
+
+---
+
 ## 🔮 The invisible Blockchain Experience
 
 AI application developers struggle with **transaction inertia**—forcing users to install wallets, acquire native testnet gas tokens (like Base Sepolia ETH), and sign multiple slow popups just to test a single prompt.
