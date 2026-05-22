@@ -100,8 +100,9 @@ export function useUGFPayment() {
       console.log("[UGF] Opening UGF Gasless Payment modal...");
 
       // 7. Trigger UGF Gasless execution
-      const result = await openUGF({
+      const result: any = await openUGF({
         signer,
+        destChainId: "84532",
         tx: {
           to: MODEL_MARKET_ADDRESS,
           data: data
