@@ -23,6 +23,7 @@ import {
   Search,
   Menu,
   X,
+  Wallet,
 } from 'lucide-react';
 import { useUGFPayment } from '@/hooks/useUGFPayment';
 
@@ -191,28 +192,12 @@ export default function Home() {
     <div className="min-h-screen font-sans transition-colors duration-300">
       {/* Header (sticky) */}
       <header className={`sticky top-0 z-50 max-w-7xl mx-auto w-[calc(100%-2rem)] border backdrop-blur-2xl transition-all duration-300 ${isMobileMenuOpen ? 'rounded-[2rem] bg-black/40' : 'rounded-full'} ${headerBgClass}`}>
-        <div className="px-6 md:px-8 h-16 flex items-center justify-between">
-          <div className={`flex items-center gap-2 font-medium ${headerTextClass}`}>
-            <Box className="w-5 h-5" />
-            <span>ModelMarket</span>
-          </div>
-
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <button type="button" onClick={() => scrollToSection('The Invisible Blockchain')} className={`${headerLinkClass} transition-colors`}>Flow</button>
-            <button type="button" onClick={() => scrollToSection('Available Models')} className={`${headerLinkClass} transition-colors`}>Models</button>
-            <button type="button" onClick={() => scrollToSection('Live Integration Demo')} className={`${headerLinkClass} transition-colors`}>Studio</button>
-            <a href="/dashboard" className={`${headerLinkClass} transition-colors`}>Dashboard</a>
-          </nav>
-
-          <div className="flex items-center gap-4">
-            <button onClick={connectWallet} className={connectBtnClass}>
-              {walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : 'Connect Wallet'}
-            </button>
-
-            {/* Hamburger Menu Button */}
+        <div className="relative px-6 md:px-8 h-16 flex items-center justify-between w-full">
+          {/* Mobile: Hamburger Menu (always on the left) */}
+          <div className="flex items-center md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-full hover:bg-white/[0.04] transition-colors border border-transparent hover:border-white/10"
+              className="p-2 rounded-full hover:bg-white/[0.04] transition-colors border border-transparent hover:border-white/10"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -220,6 +205,51 @@ export default function Home() {
               ) : (
                 <Menu className={`w-5 h-5 ${headerTextClass}`} />
               )}
+            </button>
+          </div>
+
+          {/* Desktop Logo (aligned to left) */}
+          <div className={`hidden md:flex items-center gap-2 font-medium ${headerTextClass}`}>
+            <Box className="w-5 h-5" />
+            <span>ModelMarket</span>
+          </div>
+
+          {/* Mobile Logo (absolutely centered) */}
+          <div className={`flex md:hidden items-center gap-2 font-medium absolute left-1/2 -translate-x-1/2 ${headerTextClass}`}>
+            <Box className="w-5 h-5" />
+            <span>ModelMarket</span>
+          </div>
+
+          {/* Desktop Navigation (centered) */}
+          <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+            <button type="button" onClick={() => scrollToSection('The Invisible Blockchain')} className={`${headerLinkClass} transition-colors`}>Flow</button>
+            <button type="button" onClick={() => scrollToSection('Available Models')} className={`${headerLinkClass} transition-colors`}>Models</button>
+            <button type="button" onClick={() => scrollToSection('Live Integration Demo')} className={`${headerLinkClass} transition-colors`}>Studio</button>
+            <a href="/dashboard" className={`${headerLinkClass} transition-colors`}>Dashboard</a>
+          </nav>
+
+          {/* Right Action container */}
+          <div className="flex items-center justify-end gap-4">
+            {/* Desktop Connect Button (shows text/address) */}
+            <button onClick={connectWallet} className={`hidden md:block ${connectBtnClass}`}>
+              {walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : 'Connect Wallet'}
+            </button>
+
+            {/* Mobile Connect Button (shows wallet logo icon only) */}
+            <button 
+              onClick={connectWallet} 
+              className={`block md:hidden p-2.5 rounded-full transition-all border ${
+                walletAddress 
+                  ? (isLightSection 
+                      ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 shadow-sm' 
+                      : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.15)]') 
+                  : (isLightSection 
+                      ? 'border-zinc-300 bg-zinc-900 text-white hover:bg-zinc-800 shadow-sm' 
+                      : 'border-white/25 bg-white text-zinc-900 hover:bg-zinc-100 shadow-[0_0_15px_rgba(255,255,255,0.1)]')
+              }`}
+              aria-label="Connect Wallet"
+            >
+              <Wallet className="w-5 h-5" />
             </button>
           </div>
         </div>
