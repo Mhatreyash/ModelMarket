@@ -60,12 +60,26 @@ const FlowArt: React.FC<FlowArtProps> = ({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    let originalScrollRestoration: ScrollRestoration = 'auto';
+    if (typeof window !== 'undefined' && window.history) {
+      originalScrollRestoration = window.history.scrollRestoration;
+      window.history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+    }
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setReducedMotion(mq.matches);
     update();
     mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
+    return () => {
+      clearTimeout(timer);
+      mq.removeEventListener('change', update);
+      if (typeof window !== 'undefined' && window.history) {
+        window.history.scrollRestoration = originalScrollRestoration;
+      }
+    };
   }, []);
 
   // Capture late-loading assets (like the Hero background video or styled cards) to ensure ScrollTrigger heights align
@@ -95,6 +109,9 @@ const FlowArt: React.FC<FlowArtProps> = ({
   useGSAP(
     () => {
       if (!containerRef.current || !mounted || reducedMotion) return;
+
+      // Force teardown and reversion of all stale ScrollTriggers and spacer elements from previous views
+      ScrollTrigger.getAll().forEach((t) => t.kill(true));
 
       const sections = Array.from(
         containerRef.current.querySelectorAll<HTMLElement>('[data-flow-section]'),
@@ -140,7 +157,8 @@ const FlowArt: React.FC<FlowArtProps> = ({
       ScrollTrigger.refresh();
 
       return () => {
-        triggers.forEach((t) => t.kill());
+        triggers.forEach((t) => t.kill(true));
+        ScrollTrigger.getAll().forEach((t) => t.kill(true));
       };
     },
     { scope: containerRef, dependencies: [childCount(children), reducedMotion, mounted] },
