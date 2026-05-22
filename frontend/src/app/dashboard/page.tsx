@@ -148,7 +148,7 @@ export default function Dashboard() {
             <div className="flex items-center gap-2 font-medium text-white">
               <Box className="w-5 h-5 animate-pulse text-[#22d3ee]" />
               <span className="tracking-tight font-semibold">ModelMarket</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#081528] border border-cyan-500/30 text-[#22d3ee] font-mono">Console</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#081528] border border-cyan-500/30 text-[#22d3ee] font-mono">Dashboard</span>
             </div>
           </div>
 
@@ -168,7 +168,7 @@ export default function Dashboard() {
         {/* Banner with Live Simulation Trigger */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">Developer Console</h1>
+            <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">Models Dashboard</h1>
             <p className="text-zinc-400 text-sm">Track gasless micro-transactions and API integrations abstracted by UGF.</p>
           </div>
           <button 
@@ -427,12 +427,12 @@ export default function Dashboard() {
         </div>
       </main>
 
-      {/* Console Footer */}
+      {/* Dashboard Footer */}
       <footer className="mt-20 border-t border-[#22d3ee]/10 py-8 text-center text-xs text-zinc-500 font-mono relative z-10">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>© 2026 ModelMarket. Powered by Universal Gas Framework.</div>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-white transition-colors">API Docs</a>
+            <a href="#" className="hover:text-white transition-colors">API Flow</a>
             <a href="#" className="hover:text-[#22d3ee] transition-colors">Base Sepolia Explorer</a>
             <a href="#" className="hover:text-white transition-colors">Support</a>
           </div>

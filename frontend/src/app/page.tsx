@@ -198,10 +198,10 @@ export default function Home() {
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <button type="button" onClick={() => scrollToSection('The Invisible Blockchain')} className={`${headerLinkClass} transition-colors`}>Docs</button>
-            <button type="button" onClick={() => scrollToSection('Live Integration Demo')} className={`${headerLinkClass} transition-colors`}>Developers</button>
-            <button type="button" onClick={() => scrollToSection('Available Models')} className={`${headerLinkClass} transition-colors`}>Marketplace</button>
-            <a href="/dashboard" className={`${headerLinkClass} transition-colors`}>Console</a>
+            <button type="button" onClick={() => scrollToSection('The Invisible Blockchain')} className={`${headerLinkClass} transition-colors`}>Flow</button>
+            <button type="button" onClick={() => scrollToSection('Available Models')} className={`${headerLinkClass} transition-colors`}>Models</button>
+            <button type="button" onClick={() => scrollToSection('Live Integration Demo')} className={`${headerLinkClass} transition-colors`}>Studio</button>
+            <a href="/dashboard" className={`${headerLinkClass} transition-colors`}>Dashboard</a>
           </nav>
 
           <div className="flex items-center gap-4">
@@ -235,17 +235,7 @@ export default function Home() {
               }}
               className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
             >
-              Docs
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                scrollToSection('Live Integration Demo');
-                setIsMobileMenuOpen(false);
-              }}
-              className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
-            >
-              Developers
+              Flow
             </button>
             <button
               type="button"
@@ -255,13 +245,23 @@ export default function Home() {
               }}
               className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
             >
-              Marketplace
+              Models
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                scrollToSection('Live Integration Demo');
+                setIsMobileMenuOpen(false);
+              }}
+              className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
+            >
+              Studio
             </button>
             <a
               href="/dashboard"
               className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
             >
-              Console
+              Dashboard
             </a>
           </div>
         )}
@@ -299,7 +299,7 @@ export default function Home() {
 
             <div className="flex items-center justify-center gap-4">
               <button type="button" onClick={() => scrollToSection('Available Models')} className="bg-zinc-900 dark:bg-white text-white dark:text-black px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shadow-lg">
-                Explore Marketplace <ArrowRight className="w-4 h-4" />
+                Explore Studio <ArrowRight className="w-4 h-4" />
               </button>
               <button type="button" onClick={() => scrollToSection('Live Integration Demo')} className="bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white px-6 py-3 rounded-full font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors backdrop-blur-md">
                 View Demo
@@ -374,7 +374,7 @@ export default function Home() {
           </div>
         </FlowSection>
 
-        {/* 3 — Available Models / Marketplace */}
+        {/* 3 — Available Models / Studio */}
         <FlowSection aria-label="Available Models" style={{ background: 'radial-gradient(circle at 15% 35%, #0b1a4a 0%, #010618 75%)', color: '#ffffff' }}>
           <div className="max-w-7xl mx-auto relative z-10">
             {/* Glowing cyan and blue atmosphere spots behind grid */}
@@ -579,14 +579,14 @@ export default function Home() {
                     >
                       <CreditCard className="w-4 h-4 text-zinc-500" />
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs truncate">Billing: Console</div>
+                        <div className="text-xs truncate">Billing: Dashboard</div>
                       </div>
                     </a>
                   </div>
                 </div>
               </div>
 
-              {/* Column B (Central Console): Prompt Workspace */}
+              {/* Column B (Central Dashboard): Prompt Workspace */}
               <div className="relative lg:col-span-5 rounded-[1.5rem] border border-[#22d3ee]/20 bg-[#060b13]/85 backdrop-blur-2xl shadow-[0_0_40px_rgba(34,211,238,0.08),inset_0_0_12px_rgba(34,211,238,0.03)] p-6 flex flex-col justify-between overflow-hidden">
                 <div className="absolute -top-12 -left-12 w-28 h-28 bg-[#22d3ee]/5 rounded-full blur-2xl pointer-events-none" />
                 
@@ -650,14 +650,14 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Column C (Right Pane): Output Console */}
+              {/* Column C (Right Pane): Output Dashboard */}
               <div className="relative lg:col-span-4 rounded-[1.5rem] border border-[#22d3ee]/20 bg-[#060b13]/85 backdrop-blur-2xl shadow-[0_0_40px_rgba(34,211,238,0.08),inset_0_0_12px_rgba(34,211,238,0.03)] p-6 flex flex-col justify-between overflow-hidden">
                 <div className="absolute -bottom-12 -right-12 w-28 h-28 bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
                 
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-between mb-5 border-b border-zinc-800/80 pb-3">
                     <div className="text-[10px] font-semibold tracking-wider text-zinc-400 uppercase font-mono">
-                      Output Console
+                      Output Dashboard
                     </div>
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   </div>
