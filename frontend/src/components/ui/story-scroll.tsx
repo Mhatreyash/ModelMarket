@@ -57,17 +57,20 @@ const FlowArt: React.FC<FlowArtProps> = ({
 }) => {
   const containerRef = useRef<HTMLElement>(null);
   const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      // 1024px width or touch device capabilities accurately target mobile phones & tablets robustly
+      const mobileWidth = window.innerWidth < 1024;
+      const isTouch = window.matchMedia('(pointer: coarse)').matches;
+      setIsMobile(mobileWidth || isTouch);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
 
     let originalScrollRestoration: ScrollRestoration = 'auto';
-    const mobileCheck = window.innerWidth < 768;
+    const mobileCheck = window.innerWidth < 1024 || window.matchMedia('(pointer: coarse)').matches;
     
     if (!mobileCheck && typeof window !== 'undefined' && window.history) {
       originalScrollRestoration = window.history.scrollRestoration;
@@ -114,10 +117,7 @@ const FlowArt: React.FC<FlowArtProps> = ({
 
   useGSAP(
     () => {
-      if (!containerRef.current || !mounted) return;
-
-      // Force teardown and reversion of all stale ScrollTriggers and spacer elements from previous views
-      ScrollTrigger.getAll().forEach((t) => t.kill(true));
+      if (!containerRef.current || !mounted || isMobile === null) return;
 
       const sections = Array.from(
         containerRef.current.querySelectorAll<HTMLElement>('[data-flow-section]'),
@@ -125,17 +125,24 @@ const FlowArt: React.FC<FlowArtProps> = ({
       if (sections.length === 0) return;
 
       if (isMobile) {
-        // Reset properties on mobile to ensure clean standard scrolling layouts
+        // Absolutely no GSAP transitions on mobile/tablet!
+        // Force kill all active ScrollTriggers in the page
+        ScrollTrigger.getAll().forEach((t) => t.kill(true));
+
         sections.forEach((section) => {
           const inner = section.querySelector<HTMLElement>('.flow-art-container');
           if (inner) {
-            gsap.set(inner, { clearProps: 'all' });
+            gsap.killTweensOf(inner);
+            // Clear only GSAP-controlled transition properties so we do not wipe out custom background and text color style properties from React
+            gsap.set(inner, { clearProps: 'transform,rotation,zIndex,position,top,left' });
           }
-          gsap.set(section, { clearProps: 'all' });
+          gsap.killTweensOf(section);
+          gsap.set(section, { clearProps: 'transform,rotation,zIndex,position,top,left' });
         });
         return;
       }
 
+      // Only run standard transitions & pinning on desktop screens (>= 1024px, no coarse touch input)
       const triggers: ScrollTrigger[] = [];
 
       sections.forEach((section, i) => {
@@ -176,7 +183,6 @@ const FlowArt: React.FC<FlowArtProps> = ({
 
       return () => {
         triggers.forEach((t) => t.kill(true));
-        ScrollTrigger.getAll().forEach((t) => t.kill(true));
       };
     },
     { scope: containerRef, dependencies: [childCount(children), mounted, isMobile] },
