@@ -21,6 +21,9 @@ import {
   User,
   CreditCard,
   Search,
+  Menu,
+  X,
+  Wallet,
 } from 'lucide-react';
 import { useUGFPayment } from '@/hooks/useUGFPayment';
 
@@ -34,6 +37,7 @@ export default function Home() {
   const { resolvedTheme } = useTheme();
   const [activeSection, setActiveSection] = useState<string>('AI Micro-payment Made Simple');
   const [isAtTop, setIsAtTop] = useState<boolean>(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   // List of available models
   const availableModels = [
     { id: 'resume_roaster', name: 'Resume Roaster AI', cost: 0.1 },
@@ -226,26 +230,110 @@ export default function Home() {
   return (
     <div className="min-h-screen font-sans transition-colors duration-300">
       {/* Header (sticky) */}
-      <header className={`sticky top-0 z-50 max-w-7xl mx-auto w-[calc(100%-2rem)] border backdrop-blur-2xl transition-all duration-300 rounded-full ${headerBgClass}`}>
-        <div className="px-6 md:px-8 h-16 flex items-center justify-between">
-          <div className={`flex items-center gap-2 font-medium ${headerTextClass}`}>
+      <header className={`sticky top-0 z-50 max-w-7xl mx-auto w-[calc(100%-2rem)] border backdrop-blur-2xl transition-all duration-300 ${isMobileMenuOpen ? 'rounded-[2rem] bg-black/40' : 'rounded-full'} ${headerBgClass}`}>
+        <div className="relative px-6 md:px-8 h-16 flex items-center justify-between w-full">
+          {/* Mobile: Hamburger Menu (always on the left) */}
+          <div className="flex items-center md:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-full hover:bg-white/[0.04] transition-colors border border-transparent hover:border-white/10"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className={`w-5 h-5 ${headerTextClass}`} />
+              ) : (
+                <Menu className={`w-5 h-5 ${headerTextClass}`} />
+              )}
+            </button>
+          </div>
+
+          {/* Desktop Logo (aligned to left) */}
+          <div className={`hidden md:flex items-center gap-2 font-medium ${headerTextClass}`}>
             <Box className="w-5 h-5" />
             <span>ModelMarket</span>
           </div>
 
+          {/* Mobile Logo (absolutely centered) */}
+          <div className={`flex md:hidden items-center gap-2 font-medium absolute left-1/2 -translate-x-1/2 ${headerTextClass}`}>
+            <Box className="w-5 h-5" />
+            <span>ModelMarket</span>
+          </div>
+
+          {/* Desktop Navigation (centered) */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <button type="button" onClick={() => scrollToSection('Available Models')} className={`${headerLinkClass} transition-colors`}>Marketplace</button>
-            <button type="button" onClick={() => scrollToSection('Live Integration Demo')} className={`${headerLinkClass} transition-colors`}>Developers</button>
-            <button type="button" onClick={() => scrollToSection('The Invisible Blockchain')} className={`${headerLinkClass} transition-colors`}>Docs</button>
-            <a href="/dashboard" className={`${headerLinkClass} transition-colors`}>Console</a>
+            <button type="button" onClick={() => scrollToSection('The Invisible Blockchain')} className={`${headerLinkClass} transition-colors`}>Flow</button>
+            <button type="button" onClick={() => scrollToSection('Available Models')} className={`${headerLinkClass} transition-colors`}>Models</button>
+            <button type="button" onClick={() => scrollToSection('Live Integration Demo')} className={`${headerLinkClass} transition-colors`}>Studio</button>
+            <a href="/dashboard" className={`${headerLinkClass} transition-colors`}>Dashboard</a>
           </nav>
 
-          <div className="flex items-center gap-4">
-            <button onClick={connectWallet} className={connectBtnClass}>
+          {/* Right Action container */}
+          <div className="flex items-center justify-end gap-4">
+            {/* Desktop Connect Button (shows text/address) */}
+            <button onClick={connectWallet} className={`hidden md:block ${connectBtnClass}`}>
               {walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : 'Connect Wallet'}
+            </button>
+
+            {/* Mobile Connect Button (shows wallet logo icon only) */}
+            <button 
+              onClick={connectWallet} 
+              className={`block md:hidden p-2.5 rounded-full transition-all border ${
+                walletAddress 
+                  ? (isLightSection 
+                      ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 shadow-sm' 
+                      : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.15)]') 
+                  : (isLightSection 
+                      ? 'border-zinc-300 bg-zinc-900 text-white hover:bg-zinc-800 shadow-sm' 
+                      : 'border-white/25 bg-white text-zinc-900 hover:bg-zinc-100 shadow-[0_0_15px_rgba(255,255,255,0.1)]')
+              }`}
+              aria-label="Connect Wallet"
+            >
+              <Wallet className="w-5 h-5" />
             </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Panel */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden px-6 pt-2 pb-6 flex flex-col gap-4 border-t border-white/10 mt-2 animate-in fade-in slide-in-from-top-4 duration-300">
+            <button
+              type="button"
+              onClick={() => {
+                scrollToSection('The Invisible Blockchain');
+                setIsMobileMenuOpen(false);
+              }}
+              className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
+            >
+              Flow
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                scrollToSection('Available Models');
+                setIsMobileMenuOpen(false);
+              }}
+              className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
+            >
+              Models
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                scrollToSection('Live Integration Demo');
+                setIsMobileMenuOpen(false);
+              }}
+              className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
+            >
+              Studio
+            </button>
+            <a
+              href="/dashboard"
+              className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
+            >
+              Dashboard
+            </a>
+          </div>
+        )}
       </header>
 
       <FlowArt aria-label="ModelMarket Scroll Demo">
@@ -280,7 +368,7 @@ export default function Home() {
 
             <div className="flex items-center justify-center gap-4">
               <button type="button" onClick={() => scrollToSection('Available Models')} className="bg-zinc-900 dark:bg-white text-white dark:text-black px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shadow-lg">
-                Explore Marketplace <ArrowRight className="w-4 h-4" />
+                Explore Studio <ArrowRight className="w-4 h-4" />
               </button>
               <button type="button" onClick={() => scrollToSection('Live Integration Demo')} className="bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white px-6 py-3 rounded-full font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors backdrop-blur-md">
                 View Demo
@@ -355,7 +443,7 @@ export default function Home() {
           </div>
         </FlowSection>
 
-        {/* 3 — Available Models / Marketplace */}
+        {/* 3 — Available Models / Studio */}
         <FlowSection aria-label="Available Models" style={{ background: 'radial-gradient(circle at 15% 35%, #0b1a4a 0%, #010618 75%)', color: '#ffffff' }}>
           <div className="max-w-7xl mx-auto relative z-10">
             {/* Glowing cyan and blue atmosphere spots behind grid */}
@@ -560,14 +648,14 @@ export default function Home() {
                     >
                       <CreditCard className="w-4 h-4 text-zinc-500" />
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs truncate">Billing: Console</div>
+                        <div className="text-xs truncate">Billing: Dashboard</div>
                       </div>
                     </a>
                   </div>
                 </div>
               </div>
 
-              {/* Column B (Central Console): Prompt Workspace */}
+              {/* Column B (Central Dashboard): Prompt Workspace */}
               <div className="relative lg:col-span-5 rounded-[1.5rem] border border-[#22d3ee]/20 bg-[#060b13]/85 backdrop-blur-2xl shadow-[0_0_40px_rgba(34,211,238,0.08),inset_0_0_12px_rgba(34,211,238,0.03)] p-6 flex flex-col justify-between overflow-hidden">
                 <div className="absolute -top-12 -left-12 w-28 h-28 bg-[#22d3ee]/5 rounded-full blur-2xl pointer-events-none" />
                 
@@ -631,14 +719,14 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Column C (Right Pane): Output Console */}
+              {/* Column C (Right Pane): Output Dashboard */}
               <div className="relative lg:col-span-4 rounded-[1.5rem] border border-[#22d3ee]/20 bg-[#060b13]/85 backdrop-blur-2xl shadow-[0_0_40px_rgba(34,211,238,0.08),inset_0_0_12px_rgba(34,211,238,0.03)] p-6 flex flex-col justify-between overflow-hidden">
                 <div className="absolute -bottom-12 -right-12 w-28 h-28 bg-[#3b82f6]/5 rounded-full blur-2xl pointer-events-none" />
                 
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-between mb-5 border-b border-zinc-800/80 pb-3">
                     <div className="text-[10px] font-semibold tracking-wider text-zinc-400 uppercase font-mono">
-                      Output Console
+                      Output Dashboard
                     </div>
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   </div>

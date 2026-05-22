@@ -1,6 +1,6 @@
 # 🌌 ModelMarket | Gasless AI Micro-transactions
 
-ModelMarket is a high-fidelity, decentralized AI model marketplace engineered to make AI usage completely frictionless. Powered by the **Universal Gas Framework (UGF)**, it abstracts away Web3 complexity (gas fees, transaction approvals, and blockchain delays) to deliver a seamless, **"Invisible Blockchain"** payment experience tailored for mainstream adoption.
+ModelMarket is a high-fidelity, decentralized AI model studio engineered to make AI usage completely frictionless. Powered by the **Universal Gas Framework (UGF)**, it abstracts away Web3 complexity (gas fees, transaction approvals, and blockchain delays) to deliver a seamless, **"Invisible Blockchain"** payment experience tailored for mainstream adoption.
 
 ---
 
@@ -13,7 +13,7 @@ ModelMarket is a high-fidelity, decentralized AI model marketplace engineered to
 * **Vibrant Gradient backdrops:** Bright, subtle glowing mesh layers (Amber, Orange, Purple, Cyan, and Blue) enhancing UI elements in dark mode.
 * **Cohesive Design System:** 100% curved pill-shaped button styles and strict typography bounds.
 
-### ⚡ Interactive Developer Console
+### ⚡ Interactive Models Dashboard
 * **Instant Wallet Synced Profile:** Seamlessly fetches connected Metamask address/status on Base Sepolia.
 * **Live Micro-payment Logging:** Translucent table capturing real-time transaction ledger state.
 * **Interactive Live Simulation Tool:** Action buttons simulating on-the-fly UGF transactions so hackathon judges can immediately see live data flows, spend metrics, and model run distributions update dynamically.
@@ -73,12 +73,12 @@ ModelMarket is a high-fidelity, decentralized AI model marketplace engineered to
 
 ```mermaid
 graph TD
-    A[AI Consumer] -->|Selects Model| B(ModelMarket Marketplace)
+    A[AI Consumer] -->|Selects Model| B(ModelMarket Studio)
     B -->|Paste Prompt / Data| C{Connect Wallet}
     C -->|UGF Abstraction Engine| D[Invisible Gasless Micro-payment]
     D -->|Executes Transaction| E[Base Sepolia Testnet]
     E -->|Success Trigger| F[Real-time AI Model Response]
-    F -->|Log Output & API Keys| G[Developer Console Dashboard]
+    F -->|Log Output & API Keys| G[Models Dashboard]
 ```
 
 ---
