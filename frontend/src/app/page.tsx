@@ -21,6 +21,8 @@ import {
   User,
   CreditCard,
   Search,
+  Menu,
+  X,
 } from 'lucide-react';
 import { useUGFPayment } from '@/hooks/useUGFPayment';
 
@@ -33,6 +35,7 @@ export default function Home() {
   const { resolvedTheme } = useTheme();
   const [activeSection, setActiveSection] = useState<string>('AI Micro-payment Made Simple');
   const [isAtTop, setIsAtTop] = useState<boolean>(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   // List of available models
   const availableModels = [
     { id: 'resume_roaster', name: 'Resume Roaster AI', cost: 0.1 },
@@ -187,7 +190,7 @@ export default function Home() {
   return (
     <div className="min-h-screen font-sans transition-colors duration-300">
       {/* Header (sticky) */}
-      <header className={`sticky top-0 z-50 max-w-7xl mx-auto w-[calc(100%-2rem)] border backdrop-blur-2xl transition-all duration-300 rounded-full ${headerBgClass}`}>
+      <header className={`sticky top-0 z-50 max-w-7xl mx-auto w-[calc(100%-2rem)] border backdrop-blur-2xl transition-all duration-300 ${isMobileMenuOpen ? 'rounded-[2rem] bg-black/40' : 'rounded-full'} ${headerBgClass}`}>
         <div className="px-6 md:px-8 h-16 flex items-center justify-between">
           <div className={`flex items-center gap-2 font-medium ${headerTextClass}`}>
             <Box className="w-5 h-5" />
@@ -195,9 +198,9 @@ export default function Home() {
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <button type="button" onClick={() => scrollToSection('Available Models')} className={`${headerLinkClass} transition-colors`}>Marketplace</button>
-            <button type="button" onClick={() => scrollToSection('Live Integration Demo')} className={`${headerLinkClass} transition-colors`}>Developers</button>
             <button type="button" onClick={() => scrollToSection('The Invisible Blockchain')} className={`${headerLinkClass} transition-colors`}>Docs</button>
+            <button type="button" onClick={() => scrollToSection('Live Integration Demo')} className={`${headerLinkClass} transition-colors`}>Developers</button>
+            <button type="button" onClick={() => scrollToSection('Available Models')} className={`${headerLinkClass} transition-colors`}>Marketplace</button>
             <a href="/dashboard" className={`${headerLinkClass} transition-colors`}>Console</a>
           </nav>
 
@@ -205,8 +208,63 @@ export default function Home() {
             <button onClick={connectWallet} className={connectBtnClass}>
               {walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : 'Connect Wallet'}
             </button>
+
+            {/* Hamburger Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-full hover:bg-white/[0.04] transition-colors border border-transparent hover:border-white/10"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className={`w-5 h-5 ${headerTextClass}`} />
+              ) : (
+                <Menu className={`w-5 h-5 ${headerTextClass}`} />
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Panel */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden px-6 pt-2 pb-6 flex flex-col gap-4 border-t border-white/10 mt-2 animate-in fade-in slide-in-from-top-4 duration-300">
+            <button
+              type="button"
+              onClick={() => {
+                scrollToSection('The Invisible Blockchain');
+                setIsMobileMenuOpen(false);
+              }}
+              className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
+            >
+              Docs
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                scrollToSection('Live Integration Demo');
+                setIsMobileMenuOpen(false);
+              }}
+              className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
+            >
+              Developers
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                scrollToSection('Available Models');
+                setIsMobileMenuOpen(false);
+              }}
+              className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
+            >
+              Marketplace
+            </button>
+            <a
+              href="/dashboard"
+              className={`text-left py-2 text-sm font-medium ${headerLinkClass} transition-colors`}
+            >
+              Console
+            </a>
+          </div>
+        )}
       </header>
 
       <FlowArt aria-label="ModelMarket Scroll Demo">
